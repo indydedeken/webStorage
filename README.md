@@ -1,7 +1,7 @@
 webStorage (sessionStorage & localStorage)
 ==========
+
 Spec W3C : http://www.w3.org/TR/webstorage/#contents
-==========
 Testing web storage, some examples of using.
 
 <pre>localStorage.length; // no comment</pre>
