@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Le Web Storage avec html5</title>
+<style>
+body{
+	background-color: #09C;
+	color:#FFFFFF;
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: 18px;
+	text-shadow: -1px 1px 2px #444444;
+}
+input[type="text"]{
+    border-radius: 6px;
+    font-size: 14px;
+    height: 20px;
+	width:260px;
+}
+textarea{
+	border-radius: 6px;
+	font-size: 14px;
+	height: 50px;
+	margin-bottom:15px;
+}
+a:link {
+	color: #0F3;
+	/*text-decoration: underline;*/
+}
+a:visited {
+	color: #CCC;
+	text-decoration: underline;
+}
+a:hover, a:active, a:focus { /* ce groupe de sélecteurs offrira à un navigateur au clavier la même expérience de survol que celle d'une personne employant la souris. */
+	text-decoration: none;
+}
+.movable{
+	/* Pas de style, uniquement pour reconnaître 
+	*les contenues à hide()/show() */ 
+}
+.part{
+	background:#183F50;
+    border-radius: 15px;
+	box-shadow: 0 0 3px #F4F1DE;
+	clear:both;
+    margin: 18px auto;
+    padding: 30px;
+	position:relative;
+	text-align:center;
+    width: 400px;
+}
+.partTop{
+	float:left;
+	margin-right:20px;
+	height:auto;
+	width:auto;
+}
+.part label{
+	display: inline-block;
+	vertical-align:top;
+	width: 200px;
+}
+.part form label{
+	display: inline-block;
+	text-align: right;
+	padding-right: 20px;
+	width:100px;
+}
+select{
+	background: #FFD21E;
+	border: 1px solid #999999;
+    border-radius: 7px;
+	color: #666666;
+	cursor:pointer;
+	font-size:20px;
+	text-align:center;
+	text-shadow: 1px 0 1px #FFF;
+	vertical-align:middle;
+	width: 200px;
+}
+option{
+	background: none;
+	border-radius: 7px;
+	font-size:14px;
+	padding:5px 15px;
+}
+/* buttons */
+.btn-content{
+	clear:both;
+	text-align: center;
+}
+input[type="button"], input[type="reset"]{
+    border: 1px solid #999;
+    border-radius: 7px;
+	font-size:14px;
+	text-shadow: -1px 0 1px #666666;
+	cursor:pointer;
+	padding:5px;
+}
+.red, .redF:hover{background:#ee5f5b;color:#FFF}
+.redF, .red:hover{background:#bd362f;color:#FFF}
+.green, .greenF:hover{background:#62c462;color:#FFF}
+.greenF, .green:hover{background:#51a351;color:#FFF}
+.yellow, .yellowF:hover{background:#FBB450;color:#FFF}
+.yellowF, .yellow:hover{background:#F89406;color:#FFF}
+/* ./buttons */
+img{
+	max-width:380px;
+}
+</style>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+	/* FONCTIONS UTILISÉES DANS LE CODE CI-DESSOUS,	*
+	 * POUR ÉVITER LES REDONDANCES					*/
+
+	// animation jquery
+	function AnimerSupprimer(objetAAnimer) {
+		$(objetAAnimer).animate({left:'+=20',}).animate({left:'-=40',}).animate({left:'+=20',});
+	}
+	
+	// écrire du texte dans une langue 
+	function EcrireTexte(language, parDefaut) {
+		if(parDefaut == false) {
+			if(language == 'fr')
+				$("#texte").append('Ceci est un texte dans la langue sélectionnée.<br>');
+			else if(language == 'en') 
+				$("#texte").append('This is a text in the selected language.<br>');
+			else if(language == 'es') 
+				$("#texte").append('Se trata de un texto en el idioma seleccionado.<br>');
+		} else if(parDefaut == true) {
+			if(language == 'fr')
+				$("#texte").append('Langage par défaut.<br>');
+			else if(language == 'en') 
+				$("#texte").append('Default language.<br>');
+			else if(language == 'es') 
+				$("#texte").append('Idioma predeterminado.<br>');
+		}
+	}
+	
+	// connaitre le nombre de clés dans localStorage
+	function AfficherLesCles() {
+		if(typeof localStorage!='undefined') {
+			var i = 0;
+			var size = localStorage.length;
+			var tab = [];
+			
+			for(i ; i < size; i++){
+				tab[i] = localStorage.key(i);
+				
+				console.log(localStorage.getItem(tab[i]));
+			}
+			
+			if(size > 0) {
+				alert("Il y a " + localStorage.length + " clés :\n" + tab);
+			} else {
+				alert("Il y n'a aucune clé. \n localStorage est vide.");
+			}
+		}	
+	}
+</script>
+</head>
+<body>
+<div class="partTop">
+	<input class="redF" id="deleteAll" type="button" value="VIDER localStorage">
+	<script>
+		$('#deleteAll').live("click", function() {
+			// on vide la variable localStorage
+			/*
+			 * à noté qu'on aurait pu faire : onClick="localStorage.clear();"
+			 */
+			localStorage.clear();
+			
+			// animation : masquer les class="movable"
+			$(".movable").hide('fast');
+			
+			// affichage de la 1ere visite et vide les champs
+			document.getElementById('visites').innerHTML = 1;
+			$('textarea, input[type="text"]').val("");
+			$("#texte").replaceWith('<p id="texte"></p>');
+			var language = $("#langue").children().val();
+			$("#langue option[value='" + language + "']").attr("selected", "selected");
+			EcrireTexte(language, true);
+			
+			// animation : afficher les class="movable"
+			$(".movable").show('slow');
+		});
+	</script>
+</div>
+
+<!-- bouton pour afficher les clés utilisés -->
+<div class="partTop">
+	<input class="yellow" type="button" onClick="AfficherLesCles()" value="Connaître les clés">
+</div>
+
+<!-- connaitre le nombre de visite de l'utilisateur -->
+<div class="part">
+	<div class="movable">
+		<span id="visites"></span> visites : <input class="redF" id="deleteVisites" type="button" onClick="localStorage.removeItem('visites')" value="Supprimer mes visites">
+	</div>
+	<script>
+	if(typeof localStorage!='undefined') {
+		
+		var nbvisites = localStorage.getItem('visites');
+		if(nbvisites != null) {
+			nbvisites = parseInt(nbvisites);
+		} else {
+			nbvisites = 1;
+		}
+		// Incrémentation
+		nbvisites++;
+		
+		// Stockage à nouveau en attendant la prochaine visite...
+		localStorage.setItem('visites',nbvisites);
+		document.getElementById('visites').innerHTML = nbvisites;
+		
+	} else {
+		alert("localStorage n'est pas supporté");
+	}
+	
+	// Remettre les visites à zéro
+	$('#deleteVisites').live("click", function() {
+		// on a vidé la variable localStorage avec onClick=""localStorage.removeItem('visites')"
+		// affichage de la 1ere visite
+		document.getElementById('visites').innerHTML = 1;
+		// animation jquery
+		AnimerSupprimer($(this).parent().parent());
+	});
+	</script>
+</div>
+
+<!-- Message qui s'autosave -->
+
+<div class="part">
+	<div class="movable">
+		<label for="message">Saisir un message :</label>
+		<textarea id="message" name="message" onchange="localStorage.message=this.value"></textarea>
+		<input class="redF" id="deleteMessage" type="button" onClick="localStorage.removeItem('message');" value="Supprimer le message">
+	</div>
+	<script>
+	// Détection du support
+	if(typeof localStorage!='undefined') {
+		if('message' in localStorage) {
+			//alert("Message récupéré");
+			document.getElementById('message').value = localStorage.getItem('message');
+		}
+	} else {
+		alert("localStorage n'est pas supporté");
+	}
+	
+	$("#deleteMessage").live("click", function(){
+		document.getElementById('message').innerHTML = "";
+		// vider le champ qui contient les données
+		$("textarea").val("");
+		// animation pour la suppression du contenu
+		AnimerSupprimer($(this).parent().parent());
+	});
+	</script>
+</div>
+
+<!-- Formulaire save/reset/get/delete -->
+
+<div class="part">
+	<div class="movable">
+		<form>
+			<p><label>Nom</label> <input id="nom" name="nom" type="text"></p>
+			<p><label>Prénom</label> <input id="prenom" name="prenom" type="text"></p>
+			<p><label>Ville</label> <input id="ville" name="ville" type="text"></p>
+			<p class="btn-content">
+				<input class="green" type="button" value="Mémoriser" id="stockage">
+				<input class="red" type="reset" value="Effacer tout">
+				<input class="greenF" type="button" value="Récupérer" id="lecture">
+				<input class="redF" type="button" value="Vider" id="supprime">
+			</p>
+		</form>
+	</div>
+	<script>
+	// Méthode de stockage
+	document.getElementById('stockage').onclick = function() {
+		if(typeof localStorage!='undefined' && JSON) {
+			var coordonnees = {
+				nom:document.getElementById('nom').value,
+				prenom:document.getElementById('prenom').value,
+				ville:document.getElementById('ville').value,
+			};
+			localStorage.setItem('coord',JSON.stringify(coordonnees));
+			alert("localStorage à enregistré les champs");
+		} else alert("localStorage n'est pas supporté");
+	};
+	
+	// Méthode de lecture
+	document.getElementById('lecture').onclick = function() {
+		if(typeof localStorage!='undefined' && JSON && localStorage.getItem('coord')) {
+			var coordonnees = JSON.parse(localStorage.getItem('coord'));
+			document.getElementById('nom').value = coordonnees.nom;
+			document.getElementById('prenom').value = coordonnees.prenom;
+			document.getElementById('ville').value = coordonnees.ville;
+			alert("Ok, je te redonne ce que j'ai en mémoire !\n Un truc du style..." + coordonnees.nom + " " + coordonnees.prenom + " " + coordonnees.ville);
+		} else {
+			alert("localStorage n'est pas supporté/est vide");
+		}
+	};
+	
+	// Méthode de suppression
+	document.getElementById('supprime').onclick = function() {
+		if(typeof localStorage!='undefined' && JSON) {
+			localStorage.removeItem('coord');
+			// vider le champ qui contient les données
+			$('.movable input[type="text"]').val("");
+			// animation pour la suppression du contenu
+			AnimerSupprimer($(this).parent().parent().parent().parent());
+			//alert("Suppression effectuée");
+		} else {
+			alert("localStorage n'est pas supporté");
+		}
+	};
+	</script>
+</div>
+
+<!-- Liste déroulante -->
+<div class="part">
+	<div class="movable">
+		<form>
+			<label>Langue</label>
+			<select id="langue" name="langue">
+				<option value="fr">France</option>
+				<option value="en">England</option>
+				<option value="es">España</option>
+			</select>
+		</form>
+		<p id="texte"></p>
+	</div>
+	<script>
+	// Détection du support
+	if(typeof localStorage!='undefined') {
+		
+		/* on select le langage par defaut */
+		if(localStorage.getItem('lang') != undefined) {
+			var language = localStorage.getItem('lang');
+			$("option[value='" + language + "']").attr("selected", "selected");
+			EcrireTexte(language, false);
+		} else {
+			//si aucun langage n'est select, on prend le premier par defaut
+			var language = $("#langue").children().val();
+			$("option[value='" + language + "']").attr("selected", "selected");
+			EcrireTexte(language, true);
+		}
+		
+		// on affiche un élément de langage dans la langue voulue
+		$('#langue').bind("change", function() {
+			var language = this.options[this.selectedIndex].value;
+			localStorage.setItem('lang', language);
+			EcrireTexte(language, false);
+		});
+		
+	} else {
+		alert("localStorage n'est pas supporté");
+	}
+	</script>
+</div>
+
+<!-- fin -->
+<div class="part">
+	<p>Préférence : <a id="degagePub" href="#">Ne plus voir cette publicité</a></p>
+	<img src="http://www.w3.org/html/logo/downloads/HTML5_Logo_512.png" alt="HTML5">
+	<script>
+	// Détection du support
+	if(typeof localStorage!='undefined') {
+		// au clic sur le lien
+		$("#degagePub").live('click', function() {
+			localStorage.setItem('img', 'non');
+			$('img').remove();
+			$("#degagePub").replaceWith("Publicité masquée");
+			return false;
+		});
+		
+		// si l'utilisateur a choisi de masquer la pub
+		if(localStorage.getItem('img') != undefined) {
+			var img = localStorage.getItem('img');
+			// si on ne veut plus voir la pub
+			if(img == 'non') {
+				$('img').remove();
+				$("#degagePub").replaceWith("Publicité masquée");
+			}
+		}
+	} else {
+		alert("localStorage n'est pas supporté");
+	}
+	</script>
+</div>
+
+
+</body>
+</html>
