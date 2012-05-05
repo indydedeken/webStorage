@@ -1,4 +1,4 @@
-<h1>webStorage (sessionStorage & localStorage)</h1>
+<h1>Web Storage (sessionStorage & localStorage)</h1>
 
 Spec W3C : http://www.w3.org/TR/webstorage/#contents
 D'après un article de alsacreations.com (<a href="http://www.alsacreations.com/article/lire/1402-web-storage-localstorage-sessionstorage.html">celui-ci</a>).<br>
