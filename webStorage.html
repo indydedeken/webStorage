@@ -60,10 +60,7 @@
 	<input class="redF" id="deleteAll" type="button" value="VIDER localStorage">
 	<script>
 		$('#deleteAll').live("click", function() {
-			// on vide la variable localStorage
-			/*
-			 * à noté qu'on aurait pu faire : onClick="localStorage.clear();"
-			 */
+			// on vide la variable localStorage, on aurait pu faire un onClick=""
 			localStorage.clear();
 			
 			// animation : masquer les class="movable"
@@ -106,7 +103,7 @@
 		nbvisites++;
 		
 		// Stockage à nouveau en attendant la prochaine visite...
-		localStorage.setItem('visites',nbvisites);
+		localStorage.setItem('visites', nbvisites);
 		document.getElementById('visites').innerHTML = nbvisites;
 		
 	} else {
@@ -124,8 +121,8 @@
 	</script>
 </div>
 
-<!-- Message qui s'autosave -->
 
+<!-- Message qui s'auto-save -->
 <div class="part">
 	<div class="movable">
 		<label for="message">Saisir un message :</label>
@@ -153,8 +150,8 @@
 	</script>
 </div>
 
-<!-- Formulaire save/reset/get/delete -->
 
+<!-- Formulaire save/reset/get/delete -->
 <div class="part">
 	<div class="movable">
 		<form>
@@ -212,6 +209,7 @@
 	</script>
 </div>
 
+
 <!-- Liste déroulante -->
 <div class="part">
 	<div class="movable">
@@ -254,7 +252,8 @@
 	</script>
 </div>
 
-<!-- fin -->
+
+<!-- image publicité a masquer -->
 <div class="part">
 	<p>Préférence : <a id="degagePub" href="#">Ne plus voir cette publicité</a></p>
 	<img src="http://www.w3.org/html/logo/downloads/HTML5_Logo_512.png" alt="HTML5">
@@ -283,7 +282,5 @@
 	}
 	</script>
 </div>
-
-
 </body>
 </html>
