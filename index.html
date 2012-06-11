@@ -6,15 +6,14 @@
 <link type="text/css" rel="stylesheet" href="style.css" />
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script>
-	/* FONCTIONS UTILISÉES DANS LE CODE CI-DESSOUS,	*
-	 * POUR ÉVITER LES REDONDANCES			*/
 
 	// animation jquery
 	function AnimerSupprimer(objetAAnimer) {
-		$(objetAAnimer).animate({left:'+=20',}).animate({left:'-=40',}).animate({left:'+=20',});
+		$(objetAAnimer).slideToggle(200);
+		$(objetAAnimer).slideToggle("slow");
 	}
 	
-	// écrire du texte dans une langue 
+	// écrire du texte dans une langue particulière
 	function EcrireTexte(language, parDefaut) {
 		if(parDefaut == false) {
 			if(language == 'fr')
@@ -56,11 +55,38 @@
 </script>
 </head>
 <body>
+
+<script>
+	// declaration d'un objet album
+	var album = {};
+	album.duree = 120;
+	album.pistes = 1;
+	album.titre = "Starlight - EP";
+	album.artiste = "Muse";
+	console.log(" object : ");
+	console.log(album);
+	
+	// STRINGIFY
+	sessionStorage.setItem("album", JSON.stringify(album));
+	console.log( " après JSON.stringify : " );
+	console.log( sessionStorage.getItem("album") );
+	
+	// PARSE
+	sessionStorage.setItem("album", JSON.parse(sessionStorage.getItem("album")));
+	console.log(" après JSON.parse : ");
+	console.log( sessionStorage.getItem("album") );
+
+	// récupération de l'objet js
+	var albumtTest = {};
+	albumTest = sessionStorage.getItem("album");
+	console.log(album.titre);
+</script>
+
 <div class="partTop">
 	<input class="redF" id="deleteAll" type="button" value="VIDER localStorage">
 	<script>
 		$('#deleteAll').live("click", function() {
-			// on vide la variable localStorage, on aurait pu faire un onClick=""
+			// on vide la variable localStorage
 			localStorage.clear();
 			
 			// animation : masquer les class="movable"
